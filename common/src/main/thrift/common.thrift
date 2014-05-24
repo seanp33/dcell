@@ -14,5 +14,3 @@ enum EXTYPE {
     BUSY = 5,
     UNKNOWN = 6
 }
-
-typedef map<byte,i32> VClock

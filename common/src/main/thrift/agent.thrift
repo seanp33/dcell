@@ -3,10 +3,18 @@ namespace cpp dcell.agent.thrift
 
 include "core.thrift"
 
-
 typedef i64 AgentID
 
-// a message request
+typedef map<byte,i32> VClock
+
+enum OPERATION{
+    PING = 1, // just a ping
+    GET = 2, // gimmie
+    SET = 3, // set it
+    DEL = 4, // del it
+    SYS = 5 // some system op
+}
+
 struct Message{
     1: AgentID agentID,
     2: byte data,
@@ -16,14 +24,7 @@ struct Message{
     6: optional VClock vclock
 }
 
-// ping service
-service TestService {
+service AgentService {
    Message ping(1:Message message),
-}
-
-enum OPERATION{
-    PING = 1,
-    GET = 2,
-    SET = 3,
-    DEL = 4
+   oneway void beat()
 }

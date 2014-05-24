@@ -1,0 +1,12 @@
+*.*~
+*~
+*#*#
+*.iml
+*.ipr
+*.iws
+*.ids
+*.log
+.idea
+target
+dependency-reduced-pom.xml
+*.DS_Store
