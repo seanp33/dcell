@@ -17,7 +17,7 @@ enum OPERATION{
 
 struct Message{
     1: AgentID agentID,
-    2: byte data,
+    2: binary data,
     3: OPERATION operation,
     4: optional i32 id,
     5: optional i32 ts,
