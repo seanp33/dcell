@@ -6,7 +6,6 @@ import dcell.agent.thrift.Message;
 import org.apache.thrift.TException;
 import org.apache.thrift.async.AsyncMethodCallback;
 import org.apache.thrift.protocol.TCompactProtocol;
-import org.apache.thrift.server.THsHaServer;
 import org.apache.thrift.server.TNonblockingServer;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.transport.TFramedTransport;
@@ -27,13 +26,17 @@ public class DefaultAgent implements Agent {
     public void init() throws AgentException {
 
         try {
-            TNonblockingServerSocket tnbSocketTransport = new TNonblockingServerSocket(PORT);
             AgentService.AsyncProcessor processor = new AgentService.AsyncProcessor(new Handler());
-            TNonblockingServer.Args args = new TNonblockingServer.Args(tnbSocketTransport);
+
+            TNonblockingServerSocket socket = new TNonblockingServerSocket(PORT);
+
+            TNonblockingServer.Args args = new TNonblockingServer.Args(socket);
             args.processor(processor);
             args.transportFactory(new TFramedTransport.Factory());
             args.protocolFactory(new TCompactProtocol.Factory());
+
             server = new TNonblockingServer(args);
+
         } catch (TTransportException e) {
             LOGGER.error(e.getMessage());
             throw new AgentException("Could not initialize Agent TServerTransport", e);
@@ -69,7 +72,6 @@ public class DefaultAgent implements Agent {
         }
 
     }
-
 
     private static class Handler implements AgentService.AsyncIface {
 
