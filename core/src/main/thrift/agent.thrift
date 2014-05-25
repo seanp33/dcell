@@ -3,7 +3,7 @@ namespace cpp dcell.agent.thrift
 
 include "core.thrift"
 
-typedef i64 AgentID
+typedef string AgentID
 
 typedef map<byte,i32> VClock
 

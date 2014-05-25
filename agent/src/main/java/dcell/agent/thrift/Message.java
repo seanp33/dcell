@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class Message implements org.apache.thrift.TBase<Message, Message._Fields>, java.io.Serializable, Cloneable, Comparable<Message> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Message");
 
-  private static final org.apache.thrift.protocol.TField AGENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("agentID", org.apache.thrift.protocol.TType.I64, (short)1);
+  private static final org.apache.thrift.protocol.TField AGENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("agentID", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("data", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField OPERATION_FIELD_DESC = new org.apache.thrift.protocol.TField("operation", org.apache.thrift.protocol.TType.I32, (short)3);
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)4);
@@ -48,7 +48,7 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
     schemes.put(TupleScheme.class, new MessageTupleSchemeFactory());
   }
 
-  public long agentID; // required
+  public String agentID; // required
   public ByteBuffer data; // required
   /**
    * 
@@ -137,16 +137,15 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
   }
 
   // isset id assignments
-  private static final int __AGENTID_ISSET_ID = 0;
-  private static final int __ID_ISSET_ID = 1;
-  private static final int __TS_ISSET_ID = 2;
+  private static final int __ID_ISSET_ID = 0;
+  private static final int __TS_ISSET_ID = 1;
   private byte __isset_bitfield = 0;
   private _Fields optionals[] = {_Fields.ID,_Fields.TS,_Fields.VCLOCK};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.AGENT_ID, new org.apache.thrift.meta_data.FieldMetaData("agentID", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64        , "AgentID")));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , "AgentID")));
     tmpMap.put(_Fields.DATA, new org.apache.thrift.meta_data.FieldMetaData("data", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
     tmpMap.put(_Fields.OPERATION, new org.apache.thrift.meta_data.FieldMetaData("operation", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -165,13 +164,12 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
   }
 
   public Message(
-    long agentID,
+    String agentID,
     ByteBuffer data,
     OPERATION operation)
   {
     this();
     this.agentID = agentID;
-    setAgentIDIsSet(true);
     this.data = data;
     this.operation = operation;
   }
@@ -181,7 +179,9 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
    */
   public Message(Message other) {
     __isset_bitfield = other.__isset_bitfield;
-    this.agentID = other.agentID;
+    if (other.isSetAgentID()) {
+      this.agentID = other.agentID;
+    }
     if (other.isSetData()) {
       this.data = org.apache.thrift.TBaseHelper.copyBinary(other.data);
 ;
@@ -202,8 +202,7 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
 
   @Override
   public void clear() {
-    setAgentIDIsSet(false);
-    this.agentID = 0;
+    this.agentID = null;
     this.data = null;
     this.operation = null;
     setIdIsSet(false);
@@ -213,27 +212,28 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
     this.vclock = null;
   }
 
-  public long getAgentID() {
+  public String getAgentID() {
     return this.agentID;
   }
 
-  public Message setAgentID(long agentID) {
+  public Message setAgentID(String agentID) {
     this.agentID = agentID;
-    setAgentIDIsSet(true);
     return this;
   }
 
   public void unsetAgentID() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __AGENTID_ISSET_ID);
+    this.agentID = null;
   }
 
   /** Returns true if field agentID is set (has been assigned a value) and false otherwise */
   public boolean isSetAgentID() {
-    return EncodingUtils.testBit(__isset_bitfield, __AGENTID_ISSET_ID);
+    return this.agentID != null;
   }
 
   public void setAgentIDIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __AGENTID_ISSET_ID, value);
+    if (!value) {
+      this.agentID = null;
+    }
   }
 
   public byte[] getData() {
@@ -389,7 +389,7 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       if (value == null) {
         unsetAgentID();
       } else {
-        setAgentID((Long)value);
+        setAgentID((String)value);
       }
       break;
 
@@ -439,7 +439,7 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
   public Object getFieldValue(_Fields field) {
     switch (field) {
     case AGENT_ID:
-      return Long.valueOf(getAgentID());
+      return getAgentID();
 
     case DATA:
       return getData();
@@ -496,12 +496,12 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
     if (that == null)
       return false;
 
-    boolean this_present_agentID = true;
-    boolean that_present_agentID = true;
+    boolean this_present_agentID = true && this.isSetAgentID();
+    boolean that_present_agentID = true && that.isSetAgentID();
     if (this_present_agentID || that_present_agentID) {
       if (!(this_present_agentID && that_present_agentID))
         return false;
-      if (this.agentID != that.agentID)
+      if (!this.agentID.equals(that.agentID))
         return false;
     }
 
@@ -647,7 +647,11 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
     boolean first = true;
 
     sb.append("agentID:");
-    sb.append(this.agentID);
+    if (this.agentID == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.agentID);
+    }
     first = false;
     if (!first) sb.append(", ");
     sb.append("data:");
@@ -733,8 +737,8 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
         }
         switch (schemeField.id) {
           case 1: // AGENT_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-              struct.agentID = iprot.readI64();
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.agentID = iprot.readString();
               struct.setAgentIDIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -807,9 +811,11 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      oprot.writeFieldBegin(AGENT_ID_FIELD_DESC);
-      oprot.writeI64(struct.agentID);
-      oprot.writeFieldEnd();
+      if (struct.agentID != null) {
+        oprot.writeFieldBegin(AGENT_ID_FIELD_DESC);
+        oprot.writeString(struct.agentID);
+        oprot.writeFieldEnd();
+      }
       if (struct.data != null) {
         oprot.writeFieldBegin(DATA_FIELD_DESC);
         oprot.writeBinary(struct.data);
@@ -883,7 +889,7 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       }
       oprot.writeBitSet(optionals, 6);
       if (struct.isSetAgentID()) {
-        oprot.writeI64(struct.agentID);
+        oprot.writeString(struct.agentID);
       }
       if (struct.isSetData()) {
         oprot.writeBinary(struct.data);
@@ -914,7 +920,7 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(6);
       if (incoming.get(0)) {
-        struct.agentID = iprot.readI64();
+        struct.agentID = iprot.readString();
         struct.setAgentIDIsSet(true);
       }
       if (incoming.get(1)) {

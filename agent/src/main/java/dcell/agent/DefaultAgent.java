@@ -1,5 +1,6 @@
 package dcell.agent;
 
+import dcell.agent.conf.AgentConfiguration;
 import dcell.agent.exception.AgentException;
 import dcell.agent.thrift.AgentService;
 import dcell.agent.thrift.Message;
@@ -18,17 +19,18 @@ public class DefaultAgent implements Agent {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(DefaultAgent.class);
 
-    public static final int PORT = 10000;
-
     private TServer server;
 
+    private AgentConfiguration config;
+
     @Override
-    public void init() throws AgentException {
+    public void init(AgentConfiguration config) throws AgentException {
+        this.config = config;
 
         try {
-            AgentService.AsyncProcessor processor = new AgentService.AsyncProcessor(new Handler());
+            AgentService.AsyncProcessor processor = new AgentService.AsyncProcessor(new Handler(config.getAgentID()));
 
-            TNonblockingServerSocket socket = new TNonblockingServerSocket(PORT);
+            TNonblockingServerSocket socket = new TNonblockingServerSocket(config.getPort());
 
             TNonblockingServer.Args args = new TNonblockingServer.Args(socket);
             args.processor(processor);
@@ -50,7 +52,7 @@ public class DefaultAgent implements Agent {
         }
 
         if (!server.isServing()) {
-            LOGGER.info("Agent is now serving on {}", PORT);
+            LOGGER.info("Agent is now serving on {}", config.getPort());
             server.serve();
         }
     }
@@ -75,18 +77,25 @@ public class DefaultAgent implements Agent {
 
     private static class Handler implements AgentService.AsyncIface {
 
+        private String agentID;
+
+        private Handler(String agentID) {
+            this.agentID = agentID;
+        }
+
         @Override
         public void ping(Message message, AsyncMethodCallback resultHandler) throws TException {
-            LOGGER.debug("Ping received");
+            LOGGER.debug("Ping received by Agent " + agentID);
             String data = "PING::REPLY::" + System.currentTimeMillis();
             Message reply = new Message(message);
+            reply.setAgentID(agentID);
             reply.setData(data.getBytes());
             resultHandler.onComplete(reply);
         }
 
         @Override
         public void beat(AsyncMethodCallback resultHandler) throws TException {
-            LOGGER.debug("Beat received");
+            LOGGER.debug("Beat received by Agent " + agentID);
             resultHandler.onComplete("Beating");
         }
     }
