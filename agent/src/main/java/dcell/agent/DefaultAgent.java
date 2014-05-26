@@ -15,7 +15,11 @@ import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 public class DefaultAgent implements Agent {
+
+    private static final int DEFAULT_CLIENT_TIMEOUT = 0;
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(DefaultAgent.class);
 
@@ -25,20 +29,21 @@ public class DefaultAgent implements Agent {
 
     @Override
     public void init(AgentConfiguration config) throws AgentException {
+
+        notNull(config);
+        notNull(config.getAgentID());
+        notNull(config.getPort());
+
         this.config = config;
 
         try {
             AgentService.AsyncProcessor processor = new AgentService.AsyncProcessor(new Handler(config.getAgentID()));
-
-            TNonblockingServerSocket socket = new TNonblockingServerSocket(config.getPort());
-
+            TNonblockingServerSocket socket = new TNonblockingServerSocket(config.getPort(), config.getClientTimeout());
             TNonblockingServer.Args args = new TNonblockingServer.Args(socket);
             args.processor(processor);
             args.transportFactory(new TFramedTransport.Factory());
             args.protocolFactory(new TCompactProtocol.Factory());
-
             server = new TNonblockingServer(args);
-
         } catch (TTransportException e) {
             LOGGER.error(e.getMessage());
             throw new AgentException("Could not initialize Agent TServerTransport", e);
